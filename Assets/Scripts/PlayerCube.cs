@@ -4,27 +4,26 @@ using UnityEngine;
 
 public class PlayerCube : MonoBehaviour
 {
-	private PlayerCubesSpawner _playerCubesSpawner;
+	private PlayerCubesController _playerCubesSpawner;
+
+	public PlayerCubesController PlayerCubesSpawner => _playerCubesSpawner;
 
 	private void Start()
 	{
-		_playerCubesSpawner = GetComponentInParent<PlayerCubesSpawner>();
+		_playerCubesSpawner = GetComponentInParent<PlayerCubesController>();
 	}
 
 	private void OnCollisionEnter(Collision collision)
 	{
-		if (collision.collider.CompareTag("BarrierCube") &&
-			Mathf.Abs(collision.collider.transform.position.y - transform.position.y) < transform.localScale.y/2f)
+		if (collision.collider.TryGetComponent<Collidable>(out var collidable))
 		{
-			_playerCubesSpawner.RemovePlayerCube(gameObject);
-			transform.parent = null;
-			Destroy(gameObject, 2f);
+			collidable.Collide(this);
 		}
-		else if (collision.collider.CompareTag("StackCube"))
-		{
-			collision.collider.tag = "Untagged";
-			_playerCubesSpawner.SpawnAtTop();
-			Destroy(collision.collider.gameObject);
-		}
+	}
+	
+	public void RemoveFromParent()
+	{
+		_playerCubesSpawner.RemovePlayerCube(gameObject);
+		transform.parent = null;
 	}
 }

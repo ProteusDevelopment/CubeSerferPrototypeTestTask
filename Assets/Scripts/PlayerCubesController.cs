@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerCubesSpawner : MonoBehaviour
+public class PlayerCubesController : MonoBehaviour
 {
     [SerializeField] private GameObject _playerCubePrefab;
     [SerializeField] private int _startPlayerCubesCount = 3;
@@ -36,5 +36,11 @@ public class PlayerCubesSpawner : MonoBehaviour
     public void RemovePlayerCube(GameObject gameObjectToRemove)
 	{
         _playerCubes.Remove(gameObjectToRemove);
+
+        if (_playerCubes.Count == 0)
+        {
+            print("Game over!");
+            Destroy(gameObject.GetComponent<PlayerMover>());
+        }
 	}
 }
